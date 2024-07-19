@@ -1,7 +1,6 @@
 // src/pages/index.tsx
 import React from 'react';
-import SudokuGrid from '../app/components/SudokuGrid'; // 确保路径正确
-
+import SudokuGrid from "../components/SudokuGrid"; // 确保路径正确
 const Home: React.FC = () => {
   return (
     <div>

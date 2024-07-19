@@ -1,21 +1,78 @@
-.sudokuBoard {
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .sudokuContainer {
+    display: flex;
+    flex-direction: row;
+  }
+  
+  .sudokuBoard {
     display: grid;
     grid-template-columns: repeat(9, 40px);
     grid-template-rows: repeat(9, 40px);
-    gap: 1px;
-    margin-bottom: 20px;
-}
-
-.sudokuBoard input {
+    gap: 0;
+    border: 2px solid #000; /* 外边框 */
+  }
+  
+  .sudokuBoard input {
     width: 40px;
-    height: 50px;
+    height: 40px;
     text-align: center;
     font-size: 20px;
-    border: 1px solid #000;
-}
-
-button {
-    margin: 5px;
-    padding: 10px 20px;
-    font-size: 16px;
-}
+    border: 1px solid #ddd;
+    box-sizing: border-box;
+  }
+  
+  .fixedCell {
+    background-color: #ffe3e3;
+    border: 1px solid #bbb;
+  }
+  
+  .editableCell {
+    background-color: #fff;
+  }
+  
+  .sudokuBoard input:nth-child(9n + 1) {
+    border-left: 1px solid #000; /* 第一列、第四列、第七列的左边框 */
+  }
+  
+  .sudokuBoard input:nth-child(3n + 3) {
+    border-right: 1px solid #000; /* 第三列、第六列、第九列的右边框 */
+  }
+  
+  .sudokuBoard input:nth-child(-n + 9),
+  .sudokuBoard input:nth-last-child(-n + 9) {
+    border-top: 1px solid #000; /* 第一行和最后一行的顶边框 */
+  }
+  
+  .sudokuBoard input:nth-last-child(n + 1) {
+    border-bottom: 1px solid #000; /* 第一行和最后一行的底边框 */
+  }
+  
+  .sudokuBoard input:nth-child(9n + 4) {
+    border-left: 1px solid #000; /* 第四列的左边框 */
+  }
+  
+  .sudokuBoard input:nth-child(9n + 7) {
+    border-left: 1px solid #000; /* 第七列的左边框 */
+  }
+  
+  .rightPanel {
+    margin-left: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .rightPanel button {
+    margin: 10px 0; /* 每个按钮上下有10px的间距 */
+  }
+  
+  .difficultySelector {
+    margin-bottom: 10px;
+  }
+  
