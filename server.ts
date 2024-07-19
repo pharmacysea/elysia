@@ -1,29 +1,25 @@
 import express, { Request, Response } from 'express';
+import { Database } from 'sqlite3';
 import bodyParser from 'body-parser';
-import sqlite3 from 'sqlite3';
 import cors from 'cors';
 
 const app = express();
-const PORT = 3001; // 使用3001端口，避免与前端冲突
+const PORT = 3001;
 
 // 中间件
 app.use(cors());
 app.use(bodyParser.json());
 
 // 创建并初始化数据库
-const db = new sqlite3.Database(':memory:');
+const db = new Database(':memory:');
 db.serialize(() => {
     db.run("CREATE TABLE IF NOT EXISTS sudoku_puzzles (id INTEGER PRIMARY KEY AUTOINCREMENT, puzzle TEXT NOT NULL)");
 });
 
 // 根路径处理程序
-app.get('/', (req, res) => {
+app.get('/', (req: Request, res: Response) => {
     res.send('欢迎来到往世乐土，还请输入相应的数独题目的ID哦.');
 });
-
-interface SudokuRow {
-    puzzle: string;
-}
 
 // API: 保存数独题目
 app.post('/api/save-sudoku', (req: Request, res: Response) => {
@@ -42,11 +38,16 @@ app.post('/api/save-sudoku', (req: Request, res: Response) => {
     stmt.finalize();
 });
 
+// 定义返回行的类型
+interface SudokuRow {
+    puzzle: string;
+}
+
 // API: 获取数独题目
 app.get('/api/get-sudoku/:id', (req: Request, res: Response) => {
     const { id } = req.params;
     console.log('Fetching puzzle with ID:', id);
-    db.get("SELECT puzzle FROM sudoku_puzzles WHERE id = ?", [id], (err, row: SudokuRow | undefined) => {
+    db.get<SudokuRow>("SELECT puzzle FROM sudoku_puzzles WHERE id = ?", [id], (err, row) => {
         if (err || !row) {
             console.error('Puzzle not found:', id);
             res.status(404).send('Puzzle not found');
