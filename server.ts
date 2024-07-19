@@ -1,7 +1,7 @@
-const express = require('express');
-const bodyParser = require('body-parser');
-const sqlite3 = require('sqlite3').verbose();
-const cors = require('cors');
+import express, { Request, Response } from 'express';
+import bodyParser from 'body-parser';
+import sqlite3 from 'sqlite3';
+import cors from 'cors';
 
 const app = express();
 const PORT = 3001; // 使用3001端口，避免与前端冲突
@@ -21,8 +21,12 @@ app.get('/', (req, res) => {
     res.send('欢迎来到往世乐土，还请输入相应的数独题目的ID哦.');
 });
 
+interface SudokuRow {
+    puzzle: string;
+}
+
 // API: 保存数独题目
-app.post('/api/save-sudoku', (req, res) => {
+app.post('/api/save-sudoku', (req: Request, res: Response) => {
     const { puzzle } = req.body;
     console.log('Received puzzle:', puzzle);
     const stmt = db.prepare("INSERT INTO sudoku_puzzles (puzzle) VALUES (?)");
@@ -39,10 +43,10 @@ app.post('/api/save-sudoku', (req, res) => {
 });
 
 // API: 获取数独题目
-app.get('/api/get-sudoku/:id', (req, res) => {
+app.get('/api/get-sudoku/:id', (req: Request, res: Response) => {
     const { id } = req.params;
     console.log('Fetching puzzle with ID:', id);
-    db.get("SELECT puzzle FROM sudoku_puzzles WHERE id = ?", [id], (err, row) => {
+    db.get("SELECT puzzle FROM sudoku_puzzles WHERE id = ?", [id], (err, row: SudokuRow | undefined) => {
         if (err || !row) {
             console.error('Puzzle not found:', id);
             res.status(404).send('Puzzle not found');

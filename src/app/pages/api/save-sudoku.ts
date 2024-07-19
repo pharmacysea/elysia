@@ -1,7 +1,8 @@
-// pages/api/save-sudoku.js
-import { db } from '../../lib/database';
+// pages/api/save-sudoku.ts
+import type { NextApiRequest, NextApiResponse } from 'next';
+import { db } from '../../../../lib/database';
 
-export default function handler(req, res) {
+export default function handler(req: NextApiRequest, res: NextApiResponse) {
     if (req.method === 'POST') {
         const { puzzle } = req.body;
         console.log('Received puzzle:', puzzle);

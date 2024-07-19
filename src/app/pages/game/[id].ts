@@ -2,7 +2,12 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import styles from "../../styles/SudokuGrid.module.css";
 
-const loadSudoku = async (id) => {
+interface Cell {
+    value: string;
+    isFixed: boolean;
+}
+
+const loadSudoku = async (id: string | string[] | undefined): Promise<Cell[]> => {
     const response = await fetch(`http://localhost:3001/api/get-sudoku/${id}`);
     if (!response.ok) {
         throw new Error('Network response was not ok');
@@ -11,10 +16,10 @@ const loadSudoku = async (id) => {
     return data.puzzle;
 };
 
-const SudokuGame = () => {
+const SudokuGame: React.FC = () => {
     const router = useRouter();
     const { id } = router.query;
-    const [puzzle, setPuzzle] = useState(null);
+    const [puzzle, setPuzzle] = useState<Cell[] | null>(null);
 
     useEffect(() => {
         if (id) {
