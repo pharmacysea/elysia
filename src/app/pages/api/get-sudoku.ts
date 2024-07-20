@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { db } from '../../../../lib/database';
+import { db } from '../../../lib/database';
 
 interface SudokuRow {
     puzzle: string;

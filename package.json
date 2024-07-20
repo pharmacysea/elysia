@@ -8,7 +8,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "server": "ts-node server.ts"
+    "server": "node dist/server.js"
   },
   "dependencies": {
     "@types/body-parser": "^1.19.5",
@@ -21,7 +21,8 @@
     "next": "14.2.5",
     "react": "^18",
     "react-dom": "^18",
-    "sqlite3": "^5.1.7"
+    "sqlite3": "^5.1.7",
+    "tsconfig-paths": "^4.2.0"
   },
   "devDependencies": {
     "@types/node": "^20",

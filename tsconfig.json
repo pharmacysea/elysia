@@ -9,7 +9,9 @@
     "allowJs": true,
     "skipLibCheck": true,
     "strict": false,
-    "noEmit": true,
+    "noEmit": false,
+    "outDir": "./dist",
+    "rootDir": "./src",
     "forceConsistentCasingInFileNames": true,
     "esModuleInterop": true,
     "module": "commonjs",
@@ -31,9 +33,11 @@
   },
   "include": [
     "next-env.d.ts",
-    "**/*.ts",
-    "**/*.tsx",
+    "src/**/*.ts",
+    "src/**/*.tsx",
     ".next/types/**/*.ts",
+    "src/types/**/*.ts", // 更新为 src/types
+    "src/lib/**/*.ts", // 包含 src/lib 目录
     "build/types/**/*.ts"
   ],
   "exclude": [

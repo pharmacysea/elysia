@@ -3,7 +3,12 @@ import React, { useState, useEffect, useRef } from 'react';
 import styles from "../styles/SudokuGrid.module.css";
 import { useRouter } from 'next/router';
 
-const isValid = (grid, row, col, num) => {
+interface Cell {
+    value: string;
+    isFixed: boolean;
+}
+
+const isValid = (grid: Cell[], row: number, col: number, num: string): boolean => {
     for (let i = 0; i < 9; i++) {
         const rowIndex = 9 * row + i;
         const colIndex = 9 * i + col;
@@ -15,20 +20,20 @@ const isValid = (grid, row, col, num) => {
     return true;
 };
 
-const generateCompleteSudoku = (grid) => {
+const generateCompleteSudoku = (grid: Cell[]): boolean => {
     for (let i = 0; i < 81; i++) {
         const row = Math.floor(i / 9);
         const col = i % 9;
-        if (grid[i] === '') {
-            const numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+        if (grid[i].value === '') {
+            const numbers = ['1', '2', '3', '4', '5', '6', '7', '8', '9'];
             while (numbers.length) {
                 const num = numbers.splice(Math.floor(Math.random() * numbers.length), 1)[0];
                 if (isValid(grid, row, col, num)) {
-                    grid[i] = num;
+                    grid[i].value = num;
                     if (generateCompleteSudoku(grid)) {
                         return true;
                     }
-                    grid[i] = '';
+                    grid[i].value = '';
                 }
             }
             return false;
@@ -37,12 +42,12 @@ const generateCompleteSudoku = (grid) => {
     return true;
 };
 
-const generateSudokuPuzzle = (difficulty) => {
-    const grid = Array(81).fill('');
+const generateSudokuPuzzle = (difficulty: string): Cell[] => {
+    const grid: Cell[] = Array(81).fill({ value: '', isFixed: false });
     generateCompleteSudoku(grid);
 
     const puzzle = grid.map(cell => ({
-        value: cell,
+        ...cell,
         isFixed: true
     }));
 
@@ -67,7 +72,7 @@ const generateSudokuPuzzle = (difficulty) => {
     return puzzle;
 };
 
-const validateRows = (grid) => {
+const validateRows = (grid: Cell[]): boolean => {
     for (let i = 0; i < 9; i++) {
         const row = grid.slice(i * 9, (i + 1) * 9).map(cell => cell.value);
         const set = new Set(row);
@@ -78,9 +83,9 @@ const validateRows = (grid) => {
     return true;
 };
 
-const validateColumns = (grid) => {
+const validateColumns = (grid: Cell[]): boolean => {
     for (let i = 0; i < 9; i++) {
-        const col = [];
+        const col: string[] = [];
         for (let j = 0; j < 9; j++) {
             col.push(grid[i + j * 9].value);
         }
@@ -92,13 +97,13 @@ const validateColumns = (grid) => {
     return true;
 };
 
-const validateBoxes = (grid) => {
+const validateBoxes = (grid: Cell[]): boolean => {
     for (let i = 0; i < 9; i++) {
-        const box = [];
+        const box: string[] = [];
         const rowStart = Math.floor(i / 3) * 3;
         const colStart = (i % 3) * 3;
         for (let j = 0; j < 3; j++) {
-            for (let k = 0; k < 3; k++) {
+            for (let k = 0; j < 3; k++) {
                 box.push(grid[(rowStart + j) * 9 + (colStart + k)].value);
             }
         }
@@ -110,17 +115,17 @@ const validateBoxes = (grid) => {
     return true;
 };
 
-const SudokuGrid = () => {
-    const [grid, setGrid] = useState(Array(81).fill({ value: '', isFixed: false }));
+const SudokuGrid: React.FC = () => {
+    const [grid, setGrid] = useState<Cell[]>(Array(81).fill({ value: '', isFixed: false }));
     const [selectedCell, setSelectedCell] = useState<number | null>(null);
     const [difficulty, setDifficulty] = useState("medium");
     const [timer, setTimer] = useState(0);
     const [isPaused, setIsPaused] = useState(false);
-    const [history, setHistory] = useState<any[]>([]);
+    const [history, setHistory] = useState<Cell[][]>([]);
     const intervalRef = useRef<NodeJS.Timeout | null>(null);
     const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
 
-    const saveSudoku = async (puzzle) => {
+    const saveSudoku = async (puzzle: Cell[]) => {
         const response = await fetch('http://localhost:3001/api/save-sudoku', {
             method: 'POST',
             headers: {
@@ -132,7 +137,7 @@ const SudokuGrid = () => {
         return data.id; // 返回唯一ID
     };
 
-    const handleChange = (index, value) => {
+    const handleChange = (index: number, value: string) => {
         if (value < "1" || value > "9" || isNaN(Number(value))) {
             value = "";
         }
@@ -142,7 +147,7 @@ const SudokuGrid = () => {
         setHistory([...history, newGrid]);
     };
 
-    const handleKeyDownInput = (event, index) => {
+    const handleKeyDownInput = (event: React.KeyboardEvent<HTMLInputElement>, index: number) => {
         const allowedKeys = ['1', '2', '3', '4', '5', '6', '7', '8', '9', 'Backspace', 'Delete', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Tab'];
         if (!allowedKeys.includes(event.key)) {
             event.preventDefault();
@@ -210,7 +215,7 @@ const SudokuGrid = () => {
     };
     
 
-    const handleKeyDown = (event) => {
+    const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
         if (selectedCell === null) return;
 
         let newIndex = selectedCell;
@@ -275,7 +280,10 @@ const SudokuGrid = () => {
                     {Array.isArray(grid) && grid.map((cell, index) => (
                         <input
                             key={index}
-                            ref={el => inputRefs.current[index] = el}
+                            ref={el => {
+                                inputRefs.current[index] = el;
+                                return null; // 确保返回值是 void
+                            }}
                             type='text'
                             maxLength={1}
                             value={cell.value}

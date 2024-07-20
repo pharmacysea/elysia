@@ -1,6 +1,6 @@
 // pages/api/save-sudoku.ts
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { db } from '../../../../lib/database';
+import { db } from '../../../lib/database';
 
 export default function handler(req: NextApiRequest, res: NextApiResponse) {
     if (req.method === 'POST') {
