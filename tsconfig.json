@@ -11,7 +11,7 @@
     "strict": false,
     "noEmit": false,
     "outDir": "./dist",
-    "rootDir": "./src",
+    "rootDir": ".",
     "forceConsistentCasingInFileNames": true,
     "esModuleInterop": true,
     "module": "commonjs",
@@ -38,7 +38,8 @@
     ".next/types/**/*.ts",
     "src/types/**/*.ts", // 更新为 src/types
     "src/lib/**/*.ts", // 包含 src/lib 目录
-    "build/types/**/*.ts"
+    "build/types/**/*.ts",
+    "./src/server.ts"
   ],
   "exclude": [
     "node_modules"
