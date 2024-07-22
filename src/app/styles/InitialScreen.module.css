@@ -8,6 +8,7 @@
     align-items: center;
     justify-content: center;
     z-index: 1; 
+    background-color: rgba(248, 249, 250, 0.7);
 }
 
 .button {
@@ -25,7 +26,7 @@
     width: 50px;
     height: 50px;
     border-radius: 50%;
-    background-color: rgba(8, 87, 223, 0.7);
+    background-color: rgba(248, 249, 250, 0.7);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -37,7 +38,7 @@
 .musicIcon {
     width: 30px;
     height: 30px;
-    background-image: url('../../../public/assests/pictures/music-icon.png');
+    background-image: url('/assets/pictures/music-icon.png');
     background-size: contain;
     background-repeat: no-repeat;
 }

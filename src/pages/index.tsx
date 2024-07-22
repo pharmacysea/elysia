@@ -12,7 +12,7 @@ const Home: React.FC = () => {
 
     useEffect(() => {
         if (audioRef.current){
-            audioRef.current.volume = 0.2; //设置初始音量20%
+            audioRef.current.volume = 1.0; //设置初始音量100%
         }
     },[]);
 
@@ -55,6 +55,10 @@ const Home: React.FC = () => {
               </select>
           </div>
           <button onClick={handleGenerateSudoku}>出题</button>
+          <audio ref={audioRef} src='/audio/bgm.MP4' autoPlay loop />
+          <div className={styles.musicControl} onClick={toggleMusic}>
+            <div className={styles.musicIcon}></div>
+          </div>
       </div>
   );
 };
