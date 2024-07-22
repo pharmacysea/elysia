@@ -23,23 +23,22 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-// File: /Users/gaozhengyang/Desktop/1/workspace/elysia/src/app/page.tsx
-const entry = __importStar(require("../../../src/app/page.js"));
-// Check that the entry is a valid entry
+const entry = __importStar(require("../../pages/index")); // 确保路径正确
+// 检查 entry 是否是一个有效的 entry
 checkFields();
-// Check the prop type of the entry function
+// 检查 entry 函数的 prop 类型
 checkFields();
-// Check the arguments and return type of the generateMetadata function
+// 检查 generateMetadata 函数的参数和返回类型
 if ('generateMetadata' in entry) {
     checkFields();
     checkFields();
 }
-// Check the arguments and return type of the generateViewport function
+// 检查 generateViewport 函数的参数和返回类型
 if ('generateViewport' in entry) {
     checkFields();
     checkFields();
 }
-// Check the arguments and return type of the generateStaticParams function
+// 检查 generateStaticParams 函数的参数和返回类型
 if ('generateStaticParams' in entry) {
     checkFields();
     checkFields();

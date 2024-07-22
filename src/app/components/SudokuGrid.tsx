@@ -298,7 +298,6 @@ const SudokuGrid: React.FC = () => {
                             key={index}
                             ref={el => {
                                 inputRefs.current[index] = el;
-                                return null;
                             }}
                             type='text'
                             maxLength={1}

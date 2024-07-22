@@ -45,7 +45,7 @@ const generateCompleteSudoku = (grid: Cell[]): boolean => {
 };
 
 // 根据难度生成数独谜题
-const generateSudokuPuzzle = (difficulty: string): Cell[] => {
+export const generateSudokuPuzzle = (difficulty: string): Cell[] => { // 添加export关键字
     const grid: Cell[] = Array.from({ length: 81 }, () => ({ value: '', isFixed: false }));
     generateCompleteSudoku(grid);
 

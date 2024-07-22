@@ -1,3 +1,4 @@
+// SudokuGrid.tsx
 "use client";
 "use strict";
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
@@ -39,6 +40,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const react_1 = __importStar(require("react"));
 const SudokuGrid_module_css_1 = __importDefault(require("../styles/SudokuGrid.module.css"));
 const isValid = (grid, row, col, num) => {
+    // 检查行、列和3x3子网格是否符合数独规则
     for (let i = 0; i < 9; i++) {
         const rowIndex = 9 * row + i;
         const colIndex = 9 * i + col;
@@ -50,6 +52,7 @@ const isValid = (grid, row, col, num) => {
     return true;
 };
 const generateCompleteSudoku = (grid) => {
+    // 递归生成一个完整的数独网格
     for (let i = 0; i < 81; i++) {
         const row = Math.floor(i / 9);
         const col = i % 9;
@@ -71,18 +74,19 @@ const generateCompleteSudoku = (grid) => {
     return true;
 };
 const generateSudokuPuzzle = (difficulty) => {
-    const grid = Array(81).fill({ value: '', isFixed: false });
+    // 生成一个完整的数独并根据难度移除部分数字
+    const grid = Array.from({ length: 81 }, () => ({ value: '', isFixed: false }));
     generateCompleteSudoku(grid);
     const puzzle = grid.map(cell => (Object.assign(Object.assign({}, cell), { isFixed: true })));
     let removalCount;
     if (difficulty === "easy") {
-        removalCount = 20; // 移除20个数字
+        removalCount = 20;
     }
     else if (difficulty === "medium") {
-        removalCount = 40; // 移除40个数字
+        removalCount = 40;
     }
     else {
-        removalCount = 60; // 移除60个数字
+        removalCount = 60;
     }
     while (removalCount > 0) {
         const index = Math.floor(Math.random() * 81);
@@ -95,6 +99,7 @@ const generateSudokuPuzzle = (difficulty) => {
     return puzzle;
 };
 const validateRows = (grid) => {
+    // 验证每一行是否符合数独规则
     for (let i = 0; i < 9; i++) {
         const row = grid.slice(i * 9, (i + 1) * 9).map(cell => cell.value);
         const set = new Set(row);
@@ -105,6 +110,7 @@ const validateRows = (grid) => {
     return true;
 };
 const validateColumns = (grid) => {
+    // 验证每一列是否符合数独规则
     for (let i = 0; i < 9; i++) {
         const col = [];
         for (let j = 0; j < 9; j++) {
@@ -118,12 +124,13 @@ const validateColumns = (grid) => {
     return true;
 };
 const validateBoxes = (grid) => {
+    // 验证每一个3x3子网格是否符合数独规则
     for (let i = 0; i < 9; i++) {
         const box = [];
         const rowStart = Math.floor(i / 3) * 3;
         const colStart = (i % 3) * 3;
         for (let j = 0; j < 3; j++) {
-            for (let k = 0; j < 3; k++) {
+            for (let k = 0; k < 3; k++) {
                 box.push(grid[(rowStart + j) * 9 + (colStart + k)].value);
             }
         }
@@ -135,7 +142,7 @@ const validateBoxes = (grid) => {
     return true;
 };
 const SudokuGrid = () => {
-    const [grid, setGrid] = (0, react_1.useState)(Array(81).fill({ value: '', isFixed: false }));
+    const [grid, setGrid] = (0, react_1.useState)(Array.from({ length: 81 }, () => ({ value: '', isFixed: false })));
     const [selectedCell, setSelectedCell] = (0, react_1.useState)(null);
     const [difficulty, setDifficulty] = (0, react_1.useState)("medium");
     const [timer, setTimer] = (0, react_1.useState)(0);
@@ -144,6 +151,7 @@ const SudokuGrid = () => {
     const intervalRef = (0, react_1.useRef)(null);
     const inputRefs = (0, react_1.useRef)([]);
     const saveSudoku = (puzzle) => __awaiter(void 0, void 0, void 0, function* () {
+        // 将数独保存到后端并获取唯一ID
         const response = yield fetch('http://localhost:3001/api/save-sudoku', {
             method: 'POST',
             headers: {
@@ -152,9 +160,10 @@ const SudokuGrid = () => {
             body: JSON.stringify({ puzzle }),
         });
         const data = yield response.json();
-        return data.id; // 返回唯一ID
+        return data.id;
     });
     const handleChange = (index, value) => {
+        // 处理单元格值的变化
         if (value < "1" || value > "9" || isNaN(Number(value))) {
             value = "";
         }
@@ -164,6 +173,7 @@ const SudokuGrid = () => {
         setHistory([...history, newGrid]);
     };
     const handleKeyDownInput = (event, index) => {
+        // 处理键盘输入，限制只能输入数字
         const allowedKeys = ['1', '2', '3', '4', '5', '6', '7', '8', '9', 'Backspace', 'Delete', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Tab'];
         if (!allowedKeys.includes(event.key)) {
             event.preventDefault();
@@ -173,6 +183,7 @@ const SudokuGrid = () => {
         }
     };
     const generateSudoku = () => __awaiter(void 0, void 0, void 0, function* () {
+        // 生成数独并开始计时
         const newGrid = generateSudokuPuzzle(difficulty);
         setGrid(newGrid);
         setHistory([newGrid]);
@@ -185,14 +196,16 @@ const SudokuGrid = () => {
             setTimer(prevTimer => prevTimer + 1);
         }, 1000);
         const id = yield saveSudoku(newGrid);
-        window.location.href = `/game/${id}`; // 确保这里的 id 是保存到数据库后的返回值
+        window.location.href = `/game/${id}`;
     });
     const resetSudoku = () => {
+        // 重置数独到初始状态
         const newGrid = history[0];
         setGrid(newGrid);
         setHistory([newGrid]);
     };
     const undoLastStep = () => {
+        // 撤销上一步操作
         if (history.length > 1) {
             const newHistory = [...history];
             newHistory.pop();
@@ -201,6 +214,7 @@ const SudokuGrid = () => {
         }
     };
     const checkSolution = () => {
+        // 检查当前数独是否正确
         if (!Array.isArray(grid)) {
             console.error("Grid is not properly initialized.");
             alert("Grid is not properly initialized.");
@@ -224,6 +238,7 @@ const SudokuGrid = () => {
     };
     const handleKeyDown = (event) => {
         var _a;
+        // 处理键盘箭头按键移动焦点
         if (selectedCell === null)
             return;
         let newIndex = selectedCell;
@@ -245,6 +260,7 @@ const SudokuGrid = () => {
         (_a = inputRefs.current[newIndex]) === null || _a === void 0 ? void 0 : _a.focus();
     };
     const togglePause = () => {
+        // 暂停和恢复计时
         if (isPaused) {
             intervalRef.current = setInterval(() => {
                 setTimer(prevTimer => prevTimer + 1);
@@ -271,7 +287,7 @@ const SudokuGrid = () => {
         };
     }, []);
     return (<div className={SudokuGrid_module_css_1.default.container}>
-            <h1>Elysia的数独游戏</h1>
+            <h1>Sudoku Game</h1>
             <div className={SudokuGrid_module_css_1.default.difficultySelector}>
                 难度：
                 <select value={difficulty} onChange={(e) => setDifficulty(e.target.value)}>
@@ -284,7 +300,6 @@ const SudokuGrid = () => {
                 <div className={SudokuGrid_module_css_1.default.sudokuBoard} onKeyDown={handleKeyDown} tabIndex={0}>
                     {Array.isArray(grid) && grid.map((cell, index) => (<input key={index} ref={el => {
                 inputRefs.current[index] = el;
-                return null; // 确保返回值是 void
             }} type='text' maxLength={1} value={cell.value} onChange={(e) => handleChange(index, e.target.value)} onKeyDown={(e) => handleKeyDownInput(e, index)} className={cell.isFixed ? SudokuGrid_module_css_1.default.fixedCell : SudokuGrid_module_css_1.default.editableCell} readOnly={cell.isFixed} onFocus={() => setSelectedCell(index)}/>))}
                 </div>
                 <div className={SudokuGrid_module_css_1.default.rightPanel}>
