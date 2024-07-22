@@ -31,6 +31,7 @@
     justify-content: center;
     cursor: pointer;
     animation: rotate 2s linear infinite;
+    z-index: 2; 
 }
 
 .musicIcon {

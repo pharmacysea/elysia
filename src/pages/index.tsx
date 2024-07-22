@@ -1,5 +1,5 @@
 // src/pages/index.tsx
-import React, {useState} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import { useRouter } from 'next/router';
 import styles from '../app/styles/InitialScreen.module.css';
 import{ generateSudokuPuzzle} from './game/[id]'
@@ -7,6 +7,14 @@ import{ generateSudokuPuzzle} from './game/[id]'
 const Home: React.FC = () => {
     const router = useRouter();
     const [difficulty, setDifficulty]= useState("medium");
+    const [isPlaying, setIsPlaying] = useState(true);
+    const audioRef = useRef<HTMLAudioElement>(null);
+
+    useEffect(() => {
+        if (audioRef.current){
+            audioRef.current.volume = 0.2; //设置初始音量20%
+        }
+    },[]);
 
     const handleGenerateSudoku = async () => {
         const newGrid = generateSudokuPuzzle(difficulty);//生成指定难度数独
@@ -23,6 +31,16 @@ const Home: React.FC = () => {
         }
         const data = await response.json();
         router.push(`/game/${data.id}`);
+    };
+    const toggleMusic = () => {
+        if (audioRef.current) {
+            if (isPlaying) {
+                audioRef.current.pause();
+            } else {
+                audioRef.current.play();
+            }
+            setIsPlaying(!isPlaying);
+        }
     };
 
     return (
