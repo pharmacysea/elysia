@@ -2,13 +2,14 @@
   "name": "elysia",
   "version": "0.1.0",
   "private": true,
-  "type": "module",
+  "type": "commonjs",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "server": "node dist/server.js"
+    "compile": "tsc",
+    "server": "npm run compile && node dist/src/server.js"
   },
   "dependencies": {
     "@types/body-parser": "^1.19.5",

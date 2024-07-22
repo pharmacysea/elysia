@@ -11,7 +11,7 @@
     "strict": false,
     "noEmit": false,
     "outDir": "./dist",
-    "rootDir": "./src",
+    "rootDir": ".",
     "forceConsistentCasingInFileNames": true,
     "esModuleInterop": true,
     "module": "commonjs",
@@ -27,18 +27,21 @@
     ],
     "paths": {
       "@/*": [
-        "./src/*"
+        "./src/*",
+        "./build/types/*"
       ]
-    }
+    },
+    "strictNullChecks": true
   },
   "include": [
     "next-env.d.ts",
     "src/**/*.ts",
     "src/**/*.tsx",
     ".next/types/**/*.ts",
-    "src/types/**/*.ts", // 更新为 src/types
-    "src/lib/**/*.ts", // 包含 src/lib 目录
-    "build/types/**/*.ts"
+    "src/types/**/*.ts",
+    "src/lib/**/*.ts",
+    "build/types/**/*.ts",
+    "./src/server.ts"
   ],
   "exclude": [
     "node_modules"
