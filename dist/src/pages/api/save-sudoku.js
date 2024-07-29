@@ -4,14 +4,15 @@ exports.default = handler;
 const database_1 = require("../../lib/database");
 function handler(req, res) {
     if (req.method === 'POST') {
-        const { puzzle } = req.body;
-        // 确保 puzzle 数据有效
-        if (!Array.isArray(puzzle) || puzzle.length !== 81) {
-            console.error('Invalid puzzle data');
+        const { puzzle, difficulty } = req.body;
+        // 验证 puzzle参数
+        if (!puzzle || !Array.isArray(puzzle)) {
+            console.error('Invalid puzzle data:', puzzle);
             res.status(400).send('Invalid puzzle data');
             return;
         }
-        console.log('Received puzzle:', puzzle); // 添加日志
+        // 记录生成的谜题
+        console.log('Generated puzzle:', JSON.stringify(puzzle));
         // 保存数独谜题到数据库
         const stmt = database_1.db.prepare("INSERT INTO sudoku_puzzles (puzzle) VALUES (?)");
         stmt.run(JSON.stringify(puzzle), function (err) {
@@ -20,7 +21,6 @@ function handler(req, res) {
                 res.status(500).send('Error saving puzzle');
             }
             else {
-                console.log('Puzzle saved with ID:', this.lastID); // 添加日志
                 res.json({ id: this.lastID });
             }
         });

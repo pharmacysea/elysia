@@ -116,6 +116,28 @@ const SudokuGrid: React.FC = () => {
                 });
         }
     }, [id]);
+    //记录每一步
+    const saveStep = async (puzzle : Cell[], stepNumber: number) => {
+        await fetch('/api/save-step',{
+            method: 'POST',
+            headers:{
+                'Content-Type' : 'application/json'
+            },
+            body: JSON.stringify({ puzzle, stepNumber, gameId:id}),
+        });
+    };
+
+  
+    //记录最终结果
+    const saveFinalResult = async (puzzle : Cell[]) => {
+        await fetch('/api/save-final',{
+            method: 'POST',
+            headers:{
+                'Content-Type' : 'application/json'
+            },
+            body: JSON.stringify({ puzzle, gameId: id}),
+        });
+    };
 
     const saveSudoku = async (puzzle: Cell[]) => {
         const response = await fetch('/api/save-sudoku', {
@@ -137,8 +159,11 @@ const SudokuGrid: React.FC = () => {
         newGrid[index] = { ...newGrid[index], value };
         setGrid(newGrid);
         setHistory([...history, newGrid]);
+        
+          //记录现有步
+        saveStep(newGrid, history.length + 1);
     };
-
+    
     const handleKeyDownInput = (event: React.KeyboardEvent<HTMLInputElement>, index: number) => {
         const allowedKeys = ['1', '2', '3', '4', '5', '6', '7', '8', '9', 'Backspace', 'Delete', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Tab'];
         if (!allowedKeys.includes(event.key)) {
@@ -203,6 +228,8 @@ const SudokuGrid: React.FC = () => {
             if (intervalRef.current) {
                 clearInterval(intervalRef.current);
             }
+            //记录最终结果
+            saveFinalResult(grid);
         } else {
             alert("我也会读心术，比如，你在想为什么不对，对不对？");
         }
@@ -288,7 +315,7 @@ const SudokuGrid: React.FC = () => {
                     ))}
                 </div>
                 <div className={styles.rightPanel}>
-                    <div>计时：{timer} 秒 <button onClick={togglePause}>{isPaused ? "恢复" : "暂停"}</button></div>
+                    <div>计时：{timer} 秒 <button onClick={togglePause}>{isPaused ? "复原吧" : "暂停魔法哦"}</button></div>
                     <button onClick={generateSudoku}>出题</button>
                     <button onClick={undoLastStep}>撤销</button>
                     <button onClick={resetSudoku}>重置</button>

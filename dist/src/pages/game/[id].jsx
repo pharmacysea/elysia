@@ -36,6 +36,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.generateSudokuPuzzle = void 0;
 const react_1 = __importStar(require("react"));
 const router_1 = require("next/router");
 const SudokuGrid_module_css_1 = __importDefault(require("../../app/styles/SudokuGrid.module.css"));
@@ -99,6 +100,7 @@ const generateSudokuPuzzle = (difficulty) => {
     console.log('Generated puzzle:', puzzle); // 添加日志
     return puzzle;
 };
+exports.generateSudokuPuzzle = generateSudokuPuzzle;
 const SudokuGrid = () => {
     const router = (0, router_1.useRouter)();
     const { id, difficulty: queryDifficulty } = router.query; // 获取 URL 中的 difficulty 参数
@@ -138,6 +140,26 @@ const SudokuGrid = () => {
             });
         }
     }, [id]);
+    //记录每一步
+    const saveStep = (puzzle, stepNumber) => __awaiter(void 0, void 0, void 0, function* () {
+        yield fetch('/api/save-step', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ puzzle, stepNumber, gameId: id }),
+        });
+    });
+    //记录最终结果
+    const saveFinalResult = (puzzle) => __awaiter(void 0, void 0, void 0, function* () {
+        yield fetch('/api/save-final', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ puzzle, gameId: id }),
+        });
+    });
     const saveSudoku = (puzzle) => __awaiter(void 0, void 0, void 0, function* () {
         const response = yield fetch('/api/save-sudoku', {
             method: 'POST',
@@ -157,6 +179,8 @@ const SudokuGrid = () => {
         newGrid[index] = Object.assign(Object.assign({}, newGrid[index]), { value });
         setGrid(newGrid);
         setHistory([...history, newGrid]);
+        //记录现有步
+        saveStep(newGrid, history.length + 1);
     };
     const handleKeyDownInput = (event, index) => {
         const allowedKeys = ['1', '2', '3', '4', '5', '6', '7', '8', '9', 'Backspace', 'Delete', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Tab'];
@@ -169,7 +193,7 @@ const SudokuGrid = () => {
     };
     const generateSudoku = () => __awaiter(void 0, void 0, void 0, function* () {
         const difficultyString = Array.isArray(difficulty) ? difficulty[0] : difficulty; // 确保传递的是字符串
-        const newGrid = generateSudokuPuzzle(difficultyString);
+        const newGrid = (0, exports.generateSudokuPuzzle)(difficultyString);
         setGrid(newGrid);
         setHistory([newGrid]);
         setTimer(0);
