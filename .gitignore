@@ -1,36 +1,29 @@
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+# IntelliJ IDEA related files
+.idea/
+*.iml
 
-# dependencies
-/node_modules
-/.pnp
-.pnp.js
-.yarn/install-state.gz
+# Compiled output directory
+dist/
 
-# testing
-/coverage
+# Ignore node_modules (if relevant)
+node_modules/
 
-# next.js
-/.next/
-/out/
+# Logs
+logs/
+*.log
 
-# production
-/build
+# Ignore other temporary files
+*.patch
 
-# misc
-.DS_Store
-*.pem
+# Ignore Next.js and Webpack cache
+.next
+build
 
-# debug
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
+# Optionally ignore all .pack.gz files anywhere in the project
+*.pack.gz
 
-# local env files
-.env*.local
+# Ignore Webpack hot update files
+*.webpack.hot-update.json
 
-# vercel
-.vercel
-
-# typescript
+# Ignore all .tsbuildinfo files
 *.tsbuildinfo
-next-env.d.ts
